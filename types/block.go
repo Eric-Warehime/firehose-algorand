@@ -3,7 +3,7 @@ package types
 import (
 	"fmt"
 	"github.com/streamingfast/bstream"
-	pbalgo "github.com/streamingfast/firehose-acme/types/pb/sf/algorand/type/v1"
+	pbalgo "github.com/Eric-Warehime/firehose-algorand/types/pb/sf/algorand/type/v1"
 	pbbstream "github.com/streamingfast/pbgo/sf/bstream/v1"
 	"google.golang.org/protobuf/proto"
 )

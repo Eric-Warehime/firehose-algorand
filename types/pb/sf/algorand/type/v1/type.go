@@ -1,4 +1,4 @@
-package pbacme
+package pbalgorand
 
 import (
 	"time"

@@ -1,4 +1,4 @@
-module github.com/streamingfast/firehose-acme/types
+module github.com/Eric-Warehime/firehose-algorand/types
 
 go 1.16
 

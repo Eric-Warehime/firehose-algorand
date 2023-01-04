@@ -4,13 +4,13 @@
          /_/ /_/_/  \__/_//_/\___/___/\__/
 
 Welcome to this node manager pod, common commands:
- - Show version                       fireacme --version
+ - Show version                       firealgorand --version
 
-Node manager commands (acme-... <tab> to show all):
- - Check if running                   acme-is-running
+Node manager commands (algorand-... <tab> to show all):
+ - Check if running                   algorand-is-running
 
- - Debug Firehose logs for 30s       acme-debug-firehose-logs-30s
- - Stop instance                      acme-maintenance
- - Start or restart instance          acme-resume
+ - Debug Firehose logs for 30s       algorand-debug-firehose-logs-30s
+ - Stop instance                      algorand-maintenance
+ - Start or restart instance          algorand-resume
 
- - RPC Head Block                     acme-rpc-head-block
+ - RPC Head Block                     algorand-rpc-head-block
