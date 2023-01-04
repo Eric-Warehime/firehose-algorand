@@ -13,18 +13,20 @@ const (
 	// only from block #2).
 	//
 	// This is used in multiple places to determine if we reached the oldest block of the chain.
-	FirstStreamableBlock int = 1
+	FirstStreamableBlock int = 0
 
 	// Should be the number of blocks between two targets before we consider the
 	// first as "near" the second. For example if a chain is at block #215 and another
 	// source is at block #225, then there is a difference of 10 blocks which is <=
 	// than `BlockDifferenceThresholdConsideredNear` which would mean it's "near".
+	// TODO: Eric What should the "near" threshold be for Algorand?
 	BlockDifferenceThresholdConsideredNear = 15
 
 	// Those should be the port the native node is using for P2P and RPC respectively
 	// and importantly, they should be different than the `node` ones below. Each chain
 	// usually have at least P2P and RPC ports. We suggest to use the standard port on the
 	// `node` values below and increment the `reader` ones by 1.
+	// TODO: Eric Does this break us? Relays are all :4160, but p2p connections locally are randomly chosen
 	ReaderNodeP2PPort string = "30304"
 	ReaderNodeRPCPort string = "8546"
 
@@ -38,20 +40,22 @@ const (
 	// sync the chain with the blockchain network. For example on Ethereum where
 	// our standard instrumentation if using the Geth client, value is `geth`, on EOSIO
 	// chain, it's `nodeos`.
-	ChainExecutableName = "dummy-blockchain"
+	// TODO: Eric Should I use algod or goal here?
+	ChainExecutableName = "goal"
 
 	//
 	/// Standard Values
 	//
 
 	// Common ports
-	MetricsListenAddr string = ":9102"
+	// TODO: Eric Changed from 9102 to 9100 since this is the algorand prometheus metrics port
+	MetricsListenAddr string = ":9100"
 
 	// Firehose chain specific port
 	//
 	// The initial 18XXX prefix is different for every chain supported by Firehose.
 	// The current prefix is the one you should use for your chain. Once you have copied
-	// this whole repository, you should open a PR on firehose-acme to bump it again
+	// this whole repository, you should open a PR on firehose-algorand to bump it again
 	// so the next team supporting Firehose will use 18XXX and so forth.
 	ReaderNodeGRPCAddr       string = ":18010"
 	ReaderNodeManagerAPIAddr string = ":18011"

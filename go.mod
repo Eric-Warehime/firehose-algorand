@@ -1,4 +1,4 @@
-module github.com/streamingfast/firehose-acme
+module github.com/Eric-Warehime/firehose-algorand
 
 go 1.18
 

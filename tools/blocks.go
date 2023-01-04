@@ -21,11 +21,11 @@ import (
 	"io"
 	"strconv"
 
+	pbalgo "github.com/Eric-Warehime/firehose-algorand/types/pb/sf/algorand/type/v1"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"github.com/streamingfast/bstream"
 	"github.com/streamingfast/dstore"
-	pbacme "github.com/streamingfast/firehose-acme/types/pb/sf/acme/type/v1"
 	"go.uber.org/zap"
 )
 
@@ -115,17 +115,17 @@ func printBlocksE(cmd *cobra.Command, args []string) error {
 
 		seenBlockCount++
 
-		acmeBlock := block.ToProtocol().(*pbacme.Block)
+		algoBlock := block.ToProtocol().(*pbalgo.Block)
 
 		fmt.Printf("Block #%d (%s) (prev: %s): %d transactions\n",
 			block.Num(),
 			block.ID()[0:7],
 			block.PreviousID()[0:7],
-			len(acmeBlock.Transactions),
+			len(algoBlock.Transactions),
 		)
 		if printTransactions {
 			fmt.Println("- Transactions: ")
-			for _, t := range acmeBlock.Transactions {
+			for _, t := range algoBlock.Transactions {
 				fmt.Println("  * ", t.Hash)
 			}
 			fmt.Println()
@@ -190,17 +190,17 @@ func printBlockE(cmd *cobra.Command, args []string) error {
 			)
 			continue
 		}
-		acmeBlock := block.ToProtocol().(*pbacme.Block)
+		algoBlock := block.ToProtocol().(*pbalgo.Block)
 
 		fmt.Printf("Block #%d (%s) (prev: %s): %d transactions\n",
 			block.Num(),
 			block.ID()[0:7],
 			block.PreviousID()[0:7],
-			len(acmeBlock.Transactions),
+			len(algoBlock.Transactions),
 		)
 		if printTransactions {
 			fmt.Println("- Transactions: ")
-			for _, t := range acmeBlock.Transactions {
+			for _, t := range algoBlock.Transactions {
 				fmt.Printf("  * %s\n", t.Hash)
 			}
 		}
@@ -266,7 +266,7 @@ func printOneBlockE(cmd *cobra.Command, args []string) error {
 }
 
 func printBlock(block *bstream.Block) error {
-	nativeBlock := block.ToProtocol().(*pbacme.Block)
+	nativeBlock := block.ToProtocol().(*pbalgo.Block)
 
 	data, err := json.MarshalIndent(nativeBlock, "", "  ")
 	if err != nil {

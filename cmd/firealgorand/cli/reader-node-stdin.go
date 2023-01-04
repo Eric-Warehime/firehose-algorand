@@ -17,10 +17,10 @@ package cli
 import (
 	"fmt"
 
+	"github.com/Eric-Warehime/firehose-algorand/codec"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"github.com/streamingfast/dlauncher/launcher"
-	"github.com/streamingfast/firehose-acme/codec"
 	"github.com/streamingfast/logging"
 	nodeManager "github.com/streamingfast/node-manager"
 	nodeReaderStdinApp "github.com/streamingfast/node-manager/app/node_reader_stdin"
@@ -29,12 +29,12 @@ import (
 )
 
 func init() {
-	appLogger, appTracer := logging.PackageLogger("reader-node-stdin", "github.com/streamingfast/firehose-acme/fireacme/cli/reader-node-stdin")
+	appLogger, appTracer := logging.PackageLogger("reader-node-stdin", "github.com/Eric-Warehime/firehose-algorand/firealgorand/cli/reader-node-stdin")
 
 	launcher.RegisterApp(rootLog, &launcher.AppDef{
 		ID:            "reader-node-stdin",
 		Title:         "Reader Node (stdin)",
-		Description:   "Blocks reading node, unmanaged, reads Firehose logs from standard input and transform them into Firehose for Acme blocks",
+		Description:   "Blocks reading node, unmanaged, reads Firehose logs from standard input and transform them into Firehose for Algorand blocks",
 		RegisterFlags: func(cmd *cobra.Command) error { return nil },
 		FactoryFunc: func(runtime *launcher.Runtime) (launcher.App, error) {
 			sfDataDir := runtime.AbsDataDir

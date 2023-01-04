@@ -5,12 +5,12 @@ import (
 	"strings"
 	"time"
 
+	"github.com/Eric-Warehime/firehose-algorand/codec"
+	"github.com/Eric-Warehime/firehose-algorand/nodemanager"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"github.com/streamingfast/bstream/blockstream"
 	"github.com/streamingfast/dlauncher/launcher"
-	"github.com/streamingfast/firehose-acme/codec"
-	"github.com/streamingfast/firehose-acme/nodemanager"
 	"github.com/streamingfast/logging"
 	nodeManager "github.com/streamingfast/node-manager"
 	nodeManagerApp "github.com/streamingfast/node-manager/app/node_manager2"
@@ -23,11 +23,11 @@ import (
 	"google.golang.org/grpc"
 )
 
-var nodeLogger, nodeTracer = logging.PackageLogger("node", "github.com/streamingfast/firehose-acme/node")
-var nodeAcmeChainLogger, _ = logging.PackageLogger("node.acme", "github.com/streamingfast/firehose-acme/node/acme", DefaultLevelInfo)
+var nodeLogger, nodeTracer = logging.PackageLogger("node", "github.com/Eric-Warehime/firehose-algorand/node")
+var nodeAlgorandChainLogger, _ = logging.PackageLogger("node.algorand", "github.com/Eric-Warehime/firehose-algorand/node/algorand", DefaultLevelInfo)
 
-var readerLogger, readerTracer = logging.PackageLogger("reader", "github.com/streamingfast/firehose-acme/reader")
-var readerAcmeChainLogger, _ = logging.PackageLogger("reader.acme", "github.com/streamingfast/firehose-acme/reader/acme", DefaultLevelInfo)
+var readerLogger, readerTracer = logging.PackageLogger("reader", "github.com/Eric-Warehime/firehose-algorand/reader")
+var readerAlgorandChainLogger, _ = logging.PackageLogger("reader.algorand", "github.com/Eric-Warehime/firehose-algorand/reader/algorand", DefaultLevelInfo)
 
 func registerCommonNodeFlags(cmd *cobra.Command, flagPrefix string, managerAPIAddr string) {
 	cmd.Flags().String(flagPrefix+"path", ChainExecutableName, FlagDescription(`
@@ -41,9 +41,9 @@ func registerCommonNodeFlags(cmd *cobra.Command, flagPrefix string, managerAPIAd
 		is intercepted, split line by line and each line is then transformed and logged through the Firehose stack
 		logging system. The transformation extracts the level and remove the timestamps creating a 'sanitized' version
 		of the logs emitted by the blockchain's managed client process. If this is not desirable, disabled the flag
-		and all the invoked process standard error will be redirect to 'fireacme' standard's output.
+		and all the invoked process standard error will be redirect to 'firealgorand' standard's output.
 	`, flagPrefix+"path"))
-	cmd.Flags().String(flagPrefix+"manager-api-addr", managerAPIAddr, "Acme node manager API address")
+	cmd.Flags().String(flagPrefix+"manager-api-addr", managerAPIAddr, "Algorand node manager API address")
 	cmd.Flags().Duration(flagPrefix+"readiness-max-latency", 30*time.Second, "Determine the maximum head block latency at which the instance will be determined healthy. Some chains have more regular block production than others.")
 	cmd.Flags().String(flagPrefix+"arguments", "", "If not empty, overrides the list of default node arguments (computed from node type and role). Start with '+' to append to default args instead of replacing. ")
 }
@@ -58,8 +58,8 @@ func registerNode(kind string, extraFlagRegistration func(cmd *cobra.Command) er
 
 	launcher.RegisterApp(rootLog, &launcher.AppDef{
 		ID:          app,
-		Title:       fmt.Sprintf("Acme Node (%s)", kind),
-		Description: fmt.Sprintf("Acme %s node with built-in operational manager", kind),
+		Title:       fmt.Sprintf("Algorand Node (%s)", kind),
+		Description: fmt.Sprintf("Algorand %s node with built-in operational manager", kind),
 		RegisterFlags: func(cmd *cobra.Command) error {
 			registerCommonNodeFlags(cmd, flagPrefix, managerAPIaddr)
 			extraFlagRegistration(cmd)
@@ -82,11 +82,11 @@ func nodeFactoryFunc(flagPrefix, kind string) func(*launcher.Runtime) (launcher.
 		case "node":
 			appLogger = nodeLogger
 			appTracer = nodeTracer
-			supervisedProcessLogger = nodeAcmeChainLogger
+			supervisedProcessLogger = nodeAlgorandChainLogger
 		case "reader":
 			appLogger = readerLogger
 			appTracer = readerTracer
-			supervisedProcessLogger = readerAcmeChainLogger
+			supervisedProcessLogger = readerAlgorandChainLogger
 		default:
 			panic(fmt.Errorf("unknown node kind %q", kind))
 		}

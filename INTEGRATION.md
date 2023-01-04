@@ -54,8 +54,8 @@ Take note of the location of the built `dummy-blockchain` binary, you will need 
 Clone the repository:
 
 ```bash
-git clone git@github.com:streamingfast/firehose-acme.git
-cd firehose-acme
+git clone git@github.com:streamingfast/firehose-algorand.git
+cd firehose-algorand
 ```
 
 Configure firehose test etup
@@ -118,7 +118,7 @@ grpcurl -plaintext localhost:18015 list
 We can start streaming blocks with `sf.firehose.v2.Stream` Service:
 
 ```bash
-grpcurl -plaintext -d '{"start_block_num": 10}' -import-path ./proto -proto sf/acme/type/v1/type.proto localhost:18015 sf.firehose.v2.Stream.Blocks
+grpcurl -plaintext -d '{"start_block_num": 10}' -import-path ./proto -proto sf/algorand/type/v1/type.proto localhost:18015 sf.firehose.v2.Stream.Blocks
 ```
 
 # Using `firehose-acme` as a template

@@ -2,14 +2,13 @@ package types
 
 import (
 	"fmt"
-
 	"github.com/streamingfast/bstream"
-	pbacme "github.com/streamingfast/firehose-acme/types/pb/sf/acme/type/v1"
+	pbalgo "github.com/streamingfast/firehose-acme/types/pb/sf/algorand/type/v1"
 	pbbstream "github.com/streamingfast/pbgo/sf/bstream/v1"
 	"google.golang.org/protobuf/proto"
 )
 
-func BlockFromProto(b *pbacme.Block) (*bstream.Block, error) {
+func BlockFromProto(b *pbalgo.Block) (*bstream.Block, error) {
 	content, err := proto.Marshal(b)
 	if err != nil {
 		return nil, fmt.Errorf("unable to marshal to binary form: %s", err)
