@@ -19,7 +19,7 @@ import (
 	"github.com/streamingfast/cli"
 )
 
-var Cmd = &cobra.Command{Use: "tools", Short: "Developer tools related to sfeth"}
+var Cmd = &cobra.Command{Use: "tools", Short: "Developer tools related to firealgorand"}
 
 var Example = func(in string) string {
 	return string(cli.Example(in))

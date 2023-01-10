@@ -61,21 +61,15 @@ func init() {
 	printCmd.AddCommand(oneBlockCmd)
 
 	printCmd.AddCommand(blocksCmd)
-	blocksCmd.PersistentFlags().Bool("transactions", false, "Include transaction IDs in output")
 
 	printCmd.AddCommand(blockCmd)
-	blockCmd.Flags().String("transaction", "", "Filters transaction by this hash")
-
 	printCmd.PersistentFlags().Uint64("transactions-for-block", 0, "Include transaction IDs in output")
-	printCmd.PersistentFlags().Bool("transactions", false, "Include transaction IDs in output")
 	printCmd.PersistentFlags().Bool("calls", false, "Include transaction's Call data in output")
 	printCmd.PersistentFlags().Bool("instructions", false, "Include instruction output")
 	printCmd.PersistentFlags().String("store", "", "block store")
 }
 
 func printBlocksE(cmd *cobra.Command, args []string) error {
-	printTransactions := viper.GetBool("transactions")
-
 	blockNum, err := strconv.ParseUint(args[0], 10, 64)
 	if err != nil {
 		return fmt.Errorf("unable to parse block number %q: %w", args[0], err)
@@ -123,13 +117,6 @@ func printBlocksE(cmd *cobra.Command, args []string) error {
 			block.PreviousID()[0:7],
 			len(algoBlock.Transactions),
 		)
-		if printTransactions {
-			fmt.Println("- Transactions: ")
-			for _, t := range algoBlock.Transactions {
-				fmt.Println("  * ", t.Hash)
-			}
-			fmt.Println()
-		}
 	}
 }
 
@@ -198,12 +185,6 @@ func printBlockE(cmd *cobra.Command, args []string) error {
 			block.PreviousID()[0:7],
 			len(algoBlock.Transactions),
 		)
-		if printTransactions {
-			fmt.Println("- Transactions: ")
-			for _, t := range algoBlock.Transactions {
-				fmt.Printf("  * %s\n", t.Hash)
-			}
-		}
 		continue
 	}
 }

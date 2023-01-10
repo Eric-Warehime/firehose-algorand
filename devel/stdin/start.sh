@@ -3,7 +3,7 @@
 ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 clean=
-firealgorand="$ROOT/../firealgorand"
+firealgorand="$(which firealgorand)"
 
 main() {
   pushd "$ROOT" &> /dev/null
@@ -24,16 +24,16 @@ main() {
     rm -rf firehose-data &> /dev/null || true
   fi
 
-  chain_data="$ROOT/firehose-data/dummy-blockchain/data"
+  chain_data="$ROOT/firehose-data/algorand/data"
   if [[ ! -d  "$chain_data" ]]; then
     mkdir -p "$chain_data"
   fi
 
-  if ! command -v dummy-blockchain >/dev/null 2>&1; then
-    usage_error "The 'dummy-blockchain' executable must be found within your PATH, install it from source of 'https://github.com/streamingfast/dummy-blockchain'"
+  if ! command -v algod >/dev/null 2>&1; then
+    usage_error "The 'algod' executable must be found within your PATH, install it from source of 'https://github.com/algorand/go-algorand'"
   fi
 
-  exec dummy-blockchain --firehose-enabled --block-rate 60 start --store-dir "$chain_data" | $firealgorand -c $(basename $ROOT).yaml start "$@"
+  exec algod -d "/Users/eric/.algorand/" | $firealgorand -c $(basename $ROOT).yaml start "$@"
 }
 
 usage_error() {

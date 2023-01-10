@@ -5,34 +5,238 @@ package sf.algorand.type.v1;
 option go_package = "github.com/Eric-Warehime/firehose-algorand/types/pb/sf/algorand/type/v1;pbalgorand";
 
 message Block {
-  uint64 height = 1;
-  string hash = 2;
-  string prevHash = 3;
-  uint64 timestamp = 4;
-  repeated Transaction transactions = 5;
+  BlockHeader header = 1;
+  repeated SignedTxnInBlock transactions = 2;
+}
+
+message BlockHeader {
+  uint64 rnd = 1;
+  string prev = 2;
+  bytes seed = 3;
+  // TxnCommitments
+  bytes txn = 5;
+  bytes txn256 = 6;
+  // timestamp
+  int64 ts = 7;
+  string gen = 8;
+  // genesisHash
+  bytes gh = 9;
+  // RewardsState
+  string fees = 10;
+  string rwd = 11;
+  uint64 earn = 12;
+  uint64 rate = 13;
+  uint64 frac = 14;
+  uint64 rwcalr = 15;
+  // UpgradeState
+  string proto = 16;
+  string nextproto = 17;
+  uint64 nextyes = 18;
+  uint64 nextbefore = 19;
+  uint64 nextswitch = 20;
+  // UpgradeVote
+  string upgradeprop = 21;
+  uint64 upgradedelay = 22;
+  bool upgradeyes = 23;
+
+  uint64 tc = 24;
+  map<uint64, StateProofTrackingData> spt = 25;
+  // ParticipationUpdates
+  repeated bytes partupdrmv = 26;
+
+  message StateProofTrackingData {
+    bytes stateProofVotersCommitment = 27;
+    uint64 stateProofOnlineTotalWeight = 28;
+    uint64 stateProofNextRound = 29;
+  }
+}
+
+message SignedTxnWithAD {
+  SignedTxnWithAD stxnad = 1;
+  SignedTxn txn = 2;
+  ApplyData ad = 3;
+}
+
+message SignedTxnInBlock {
+  bool hasGenesisID = 1;
+  bool hasGenesisHash = 2;
+}
+
+message SignedTxn {
+  bytes sig = 1;
+  MultisigSig mSig = 2;
+  LogicSig lSig = 3;
+  Transaction txn = 4;
+  bytes authAddr = 5;
+}
+
+message ApplyData {
+  uint64 closingAmount = 1;
+  uint64 assetClosingAmount = 2;
+  uint64 senderRewards = 3;
+  uint64 receiverRewards = 4;
+  uint64 closeRewards = 5;
+  EvalDelta evalDelta = 6;
+  uint64 configAsset = 7;
+  uint64 applicationId = 8;
+}
+
+message StateDelta {
+  map<string, ValueDelta> delta = 1;
+}
+
+message EvalDelta {
+  StateDelta globalDelta = 1;
+  map<uint64, StateDelta> localDeltas = 2;
+  repeated string logs = 3;
+  repeated SignedTxnWithAD innerTxns = 4;
+}
+
+message ValueDelta {
+  DeltaAction action = 1;
+  string bytes = 2;
+  uint64 uint = 3;
+  enum DeltaAction {
+    SetBytesAction = 0;
+    SetUintAction = 1;
+    DeleteAction = 2;
+  }
+}
+
+message LogicSig {
+  repeated bytes logic = 1;
+  bytes sig = 2;
+  MultisigSig msig = 3;
+  repeated bytes args = 4;
+}
+
+message MultisigSig {
+  uint32 version = 1;
+  uint32 threshold = 2;
+  repeated MultisigSubsig subsigs = 3;
+  message MultisigSubsig {
+    bytes key = 1;
+    bytes sig = 2;
+  }
 }
 
 message Transaction {
-  string type = 1;
-  string hash = 2;
-  string sender = 3;
-  string receiver = 4;
-  BigInt amount = 5;
-  BigInt fee = 6;
-  bool success = 7;
-  repeated Event events = 8;
+  // Header
+  bytes sender = 1;
+  uint64 fee = 2;
+  uint64 firstValid = 3;
+  uint64 lastValid = 4;
+  bytes note = 5;
+  string genesisId = 6;
+  bytes genesisHash = 7;
+  bytes group = 8;
+  bytes lease = 9;
+  bytes rekeyTo = 10;
+  // KeyregTxnFields
+  bytes votePK = 11;
+  bytes selectionPK = 12;
+  bytes stateProofPK = 13;
+  uint64 voteFirst = 14;
+  uint64 voteLast = 15;
+  uint64 voteKeyDilution = 16;
+  bool nonparticipation = 17;
+  // PaymentTxnFields
+  bytes receiver = 18;
+  uint64 amount = 19;
+  bytes closeRemainderTo = 20;
+  // AssetConfigTxnFields
+  uint64 configAsset = 21;
+  AssetParams assetParams = 22;
+  // AssetTransferTxnFields
+  uint64 xferAsset = 23;
+  uint64 assetAmount = 24;
+  bytes assetSender = 25;
+  bytes assetReceiver = 26;
+  bytes assetCloseTo = 27;
+  // AssetFreezeTxnFields
+  bytes freezeAccount = 28;
+  uint64 freezeAsset = 29;
+  bool assetFrozen = 30;
+  // ApplicationCallTxnFields
+  uint64 applicationId = 31;
+  uint64 onCompletion = 32;
+  repeated bytes applicationArgs = 33;
+  repeated bytes accounts = 34;
+  repeated uint64 foreignApps = 35;
+  repeated BoxRef boxes = 36;
+  repeated uint64 foreignAssets = 37;
+  StateSchema localStateSchema = 38;
+  StateSchema globalStateSchema = 39;
+  bytes approvalProgram = 40;
+  bytes clearStateProgram = 41;
+  uint32 extraProgramPages = 42;
+  // StateProofTxnFields
+  uint64 stateProofType = 43;
+  StateProof stateProof = 44;
+  Message message = 45;
+  message StateSchema {
+    uint64 numUint = 1;
+    uint64 numByteSlice = 2;
+  }
+  message BoxRef {
+    uint64 index = 1;
+    bytes name = 2;
+  }
+  message StateProof {
+    bytes sigCommit = 1;
+    uint64 signedWeight = 2;
+    Proof sigProofs = 3;
+    Proof partProofs = 4;
+    bytes merkleSignatureSaltVersion = 5;
+    map<uint64, Reveal> reveals = 6;
+    repeated uint64 positionsToReveal = 7;
+  }
+  message Proof {
+    repeated bytes path = 1;
+    uint32 hashType = 2;
+    uint32 treeDepth = 3;
+  }
+  message Message {
+    bytes blockHeadersCommitment = 1;
+    bytes votersCommitment = 2;
+    uint64 lnProvenWeight = 3;
+    uint64 firstAttestedRound = 4;
+    uint64 lastAttestedRound = 5;
+  }
+  message Reveal {
+    SigSlotCommit sigslotCommit = 1;
+    Participant part = 2;
+  }
+  message SigSlotCommit {
+    MerkleSignature sig = 1;
+    uint64 l = 2;
+  }
+  message Participant {
+    MerkleVerifier pk = 1;
+    uint64 weight = 2;
+  }
+  message MerkleSignature {
+    bytes falconSignature = 1;
+    uint64 vectorCommitmentIndex = 2;
+    Proof proof = 3;
+    bytes falconPublicKey = 4;
+  }
+  message MerkleVerifier {
+    bytes commitment = 1;
+    uint64 keyLifetime = 2;
+  }
 }
 
-message Event {
-  string type = 1;
-  repeated Attribute attributes = 2;
-}
-
-message Attribute {
-  string key = 1;
-  string value = 2;
-}
-
-message BigInt {
-  bytes bytes = 1;
+message AssetParams {
+  uint64 total = 1;
+  uint32 decimals = 2;
+  bool defaultFrozen = 3;
+  string unitName = 4;
+  string assetName = 5;
+  string url = 6;
+  bytes metadataHash = 7;
+  bytes manager = 8;
+  bytes reserve = 9;
+  bytes freeze = 10;
+  bytes clawback = 11;
 }

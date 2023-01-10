@@ -89,10 +89,9 @@ func init() {
 					viper.GetBool("substreams-client-plaintext"),
 				)
 
-				// TODO: Eric should this say "aptos" here?
 				sss, err := substreamsService.New(
 					stateStore,
-					"sf.aptos.type.v1.Block",
+					"sf.algorand.type.v1.Block",
 					viper.GetInt("substreams-sub-request-parallel-jobs"),
 					viper.GetInt("substreams-sub-request-block-range-size"),
 					clientConfig,
